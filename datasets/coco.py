@@ -19,7 +19,7 @@ class CocoJsonParser:
     f = open(self.json_path)
     cat = {}
     for item in ijson.items(f, "categories.item"):
-      print("id:", item["id"], " name:", item["name"])
+      # print("id:", item["id"], " name:", item["name"])
       cat[item["id"]] = item["name"]
     f.close()
     return cat
@@ -40,6 +40,8 @@ class CocoJsonParser:
     for item in ijson.items(f, "annotations.item"):
       ann_dict = {}
       ann_dict["bbox"] = [int(x) for x in item["bbox"]]
+      ann_dict["bbox"][2] = ann_dict["bbox"][0] + ann_dict["bbox"][2] 
+      ann_dict["bbox"][3] = ann_dict["bbox"][1] + ann_dict["bbox"][3] 
       ann_dict["category_id"] = int(item["category_id"])
       ann_dict["category_name"] = self.get_categories_name(ann_dict["category_id"])
       all_ann_dict[item["image_id"]] = ann_dict
@@ -94,6 +96,7 @@ class coco:
         self.data_root = root_path + "/val2017/val2017"
       self.image_list = os.listdir(self.data_root)
       self.index = 0
+      self.label_len = len(self.parser.categories) + 1  # 0 for background
 
   def next_index(self):
       if self.index > len(self.image_list):
@@ -118,6 +121,9 @@ class coco:
       print(data.shape, data.shape[0])
       data = np.reshape(data, (1, data.shape[0], data.shape[1], data.shape[2]))
       info["data"] = data
+      label = np.zeros((1, self.label_len))
+      label[0, info["category_id"]] = 1
+      info["label"] = label
       #print(data.shape)
       #print("image name:", image_name, info)
       self.next_index()

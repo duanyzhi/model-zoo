@@ -88,6 +88,7 @@ class ResNet(nn.Module):
       x = self.conv2(x)
       x = self.conv3(x)
       x = self.conv4(x)
+      print("resnet size: ", x.size())
       x = self.conv5(x)
 
       if self.only_feature:
