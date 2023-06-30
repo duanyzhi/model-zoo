@@ -36,6 +36,7 @@ if __name__ == '__main__':
     iter_number = epoch * train_data_number
     print("all iter number: ", iter_number)
     model = ResNet(1000).float()
+    model = torch.nn.DataParallel(model)
     model.to(device)
     batch_size = 32
 
@@ -56,7 +57,8 @@ if __name__ == '__main__':
       loss.backward()
       optimizer.step()
       if (math.isnan(loss.item())): break
-      if (i % train_data_number == 0):
+      # if (i % (train_data_number / batch_size) == 0):
+      if (i % 1000 == 0):
         print(timer(), "iter: ", i , " loss: ", loss.item())
         all_loss.append(loss.item())
         # compute acc

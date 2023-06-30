@@ -25,6 +25,9 @@ if __name__ == '__main__':
     for iter in range(1):
       input_info = val_data.load()
       input_data = torch.tensor(input_info["data"], dtype=torch.float)
-      network.forward(input_data)
+      print("input_info: ", input_info)
+      targets = [{"bbox": torch.tensor(input_info["bbox"], dtype=torch.float).reshape(1, 4),
+                  "label": torch.tensor(input_info["label"])}]
+      network.forward(input_data, targets)
       #train_data.load()
  

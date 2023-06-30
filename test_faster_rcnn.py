@@ -10,8 +10,8 @@ val_data = coco("val")
 input_info = val_data.load()
 images = torch.tensor(input_info["data"], dtype=torch.float)
 print("input_info: ", input_info)
-targets = [{"boxes": torch.tensor(input_info["bbox"], dtype=torch.float),
-            "labels": torch.tensor(input_info["label"])}]
+targets = [{"boxes": torch.tensor(input_info["bbox"], dtype=torch.float).reshape(1, 4),
+            "labels": torch.tensor(input_info["label"], dtype=torch.int64)}]
 
 # For training
 # images, boxes = torch.rand(4, 3, 600, 1200), torch.rand(4, 11, 4)
